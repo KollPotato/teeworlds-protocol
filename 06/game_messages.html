@@ -1794,7 +1794,7 @@
                 </tr>
                 <tr>
                     <th>Flags:</th>
-                    <td>TODO</td>
+                    <td><a href="fundamentals.html#sequence_numbers">MSGFLAG_VITAL</a></td>
                 </tr>
             </table>
             <table>
@@ -1804,8 +1804,57 @@
                     <th>Note</th>
                 </tr>
                 <tr>
-                    <td id="NETMSGTYPE_CL_CHANGEINFO_todo"><a href="#NETMSGTYPE_CL_CHANGEINFO_todo">TODO</a></td>
+                    <td id="NETMSGTYPE_CL_CHANGEINFO_name"><a href="#NETMSGTYPE_CL_CHANGEINFO_name">Name</a></td>
                     <td><a href="fundamentals.html#string_packing">String</a></td>
+                    <td>
+                            Player name displayed in scoreboard and above every tee.
+                            If an empty string is sent the server sets the name <strong>(1)</strong>.
+                            If there are two players with no name the second gets the name <strong>(2)</strong>.
+                            The official implemenation supports some unicode characters.
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NETMSGTYPE_CL_CHANGEINFO_clan"><a href="#NETMSGTYPE_CL_CHANGEINFO_clan">Clan</a></td>
+                    <td><a href="fundamentals.html#string_packing">String</a></td>
+                    <td>
+                            Displayed in the scoreabord. Can be an empty string.
+                            The official implemenation supports some unicode characters.
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NETMSGTYPE_CL_CHANGEINFO_country"><a href="#NETMSGTYPE_CL_CHANGEINFO_country">Country</a></td>
+                    <td><a href="fundamentals.html#int_packing">Int</a></td>
+                    <td>
+                            This is used for the country flag that is displayed in the scoreboard.
+                            Here a few examples:
+                            <ul>
+                                <li>-1 - default</li>
+                                <li>4 - AF</li>
+                                <li>904 - XWA</li>
+                            </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NETMSGTYPE_CL_CHANGEINFO_skin"><a href="#NETMSGTYPE_CL_CHANGEINFO_skin">Skin name</a></td>
+                    <td><a href="fundamentals.html#string_packing">String</a></td>
+                    <td>
+                            If a matching filename without <strong>.png</strong> extension in the skins folder is found that texture is used as skin for the tee.
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NETMSGTYPE_CL_CHANGEINFO_use_custom_color"><a href="#NETMSGTYPE_CL_CHANGEINFO_use_custom_color">Use custom color</a></td>
+                    <td><a href="fundamentals.html#int_packing">Int</a></td>
+                    <td>
+                            If set to <strong>0</strong> the next two fields (color body, color feet) are supposed to be ignored. And the default colors of the skin image file are used.
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NETMSGTYPE_CL_CHANGEINFO_color_body"><a href="#NETMSGTYPE_CL_CHANGEINFO_color_body">Color body</a></td>
+                    <td><a href="fundamentals.html#int_packing">Int</a></td>
+                    <td>TODO</td>
+                </tr>
+                <tr>
+                    <td id="NETMSGTYPE_CL_CHANGEINFO_color_feet"><a href="#NETMSGTYPE_CL_CHANGEINFO_color_feet">Color feet</a></td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
                     <td>TODO</td>
                 </tr>
