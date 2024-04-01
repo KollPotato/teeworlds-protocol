@@ -1790,7 +1790,9 @@
                 </tr>
                 <tr>
                     <th>Expected response:</th>
-                    <td>TODO</td>
+                    <td>
+                            <a href="system_messages.html#NETMSG_SNAP">NETMSG_SNAP</a>
+                    </td>
                 </tr>
                 <tr>
                     <th>Flags:</th>
@@ -1859,6 +1861,11 @@
                     <td>TODO</td>
                 </tr>
             </table>
+            The new info will be put into the <a href="system_messages.html#NETMSG_SNAP">snap</a> item
+            <a href="snap_items.html#obj_client_info">obj_client_info</a>
+            by the server.
+            The official client implementation does not apply the new info locally on send but on receive of the snap item from the server.
+            So custom servers could enforce or ignore any kind of info and clients are supposed to pick it up.
         </p>
         <hr>
         <h2 id="NETMSGTYPE_CL_KILL"><a href="#NETMSGTYPE_CL_KILL">NETMSGTYPE_CL_KILL</a></h2>
