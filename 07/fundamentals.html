@@ -33,12 +33,14 @@
     <div class="content">
         <h1>Fundamentals</h1>
         <p>
-            There are a few basic concepts that you need to understand to fully grasp the whole network protocol from scratch.
+            There are a few basic concepts that you need to understand to
+            fully grasp the whole network protocol from scratch.
         </p>
         <hr>
         <h2 id="tokens"><a href="#tokens">Tokens</a></h2>
         <p>
-            Every game related packet (excluding server info for now) has a packet header with a token field.
+            Every game related packet (excluding server info for now) has
+            a packet header with a token field.
             From
             <a href="https://github.com/teeworlds/teeworlds/blob/26d24ec061d44e6084b2d77a9b8a0a48e354eba6/src/engine/shared/network.h#L12-L41">
                 network.h:
@@ -109,11 +111,13 @@
         <hr>
         <h2 id="sequence_numbers"><a href="#sequence_numbers">Sequence numbers</a></h2>
         <p>
-            Every chunk header can contain a vital flag (<code>MSGFLAG_VITAL</code>). Note that one Teeworlds packet can
-            contain multiple chunks. If said vital flag is set to true, the receiving party
-            has to increment a counter. This counter is called the sequence or acknowledge number.
-            The client and server will send the amount of vital chunks they received as the sequence number
-            in the packet header.
+            Every chunk header can contain a vital flag
+            (<code>MSGFLAG_VITAL</code>). Note that one Teeworlds packet can
+            contain multiple chunks. If said vital flag is set to true, the
+            receiving party has to increment a counter. This counter is called
+            the sequence or acknowledge number. The client and server will
+            send the amount of vital chunks they received as the sequence
+            number in the packet header.
             <br>
             <br>
             The
@@ -135,11 +139,11 @@
                 <li>m_Ack - The amount of vital chunks received</li>
                 <li>m_PeerAck - The amount of vital chunks acknowledged by the peer</li>
             </ul>
-            Beware that both client and server silently drop all packets with wrong
-            sequence numbers set in the packet header.
+            Beware that both client and server silently drop all packets with
+            wrong sequence numbers set in the packet header.
             <br>
-            Quick debug tip if you suspect sequence number bugs in your implementation:
-            comment out or add <code>dbg_msg</code>s in
+            Quick debug tip if you suspect sequence number bugs in your
+            implementation: comment out or add <code>dbg_msg</code>s in
             <a href="https://github.com/teeworlds/teeworlds/blob/26d24ec061d44e6084b2d77a9b8a0a48e354eba6/src/engine/shared/network_conn.cpp#L235-L246">
                 these lines.
             </a>
@@ -147,10 +151,12 @@
         <hr>
         <h2 id="flushing"><a href="#flushing">Message queueing, chunks and flushing</a></h2>
         <a href="ctrl_messages.html">Control messages</a> are sent immediately.
-        All control messages go through the <code>SendControlMsg()</code> method which calls
-        <code>SendPacket()</code> directly. In <code>SendPacket()</code> the Teeworlds packet header
-        gets added and the packet is sent over the network. Note that control messages always have
-        0 chunks because of the <code>Construct.m_NumChunks = 0;</code> line in <code>SendControlMsg()</code>:
+        All control messages go through the <code>SendControlMsg()</code>
+        method which calls <code>SendPacket()</code> directly.
+        In <code>SendPacket()</code> the Teeworlds packet header gets added
+        and the packet is sent over the network. Note that control messages
+        always have 0 chunks because of the <code>Construct.m_NumChunks = 0;</code>
+        line in <code>SendControlMsg()</code>:
         <pre class="code-snippet">
             <code>
     void CNetBase::SendControlMsg(const NETADDR *pAddr, TOKEN Token, int Ack, int ControlMsg, const void *pExtra, int ExtraSize)
@@ -170,8 +176,10 @@
     }
             </code>
         </pre>
-        However, <a href="game_messages.html">game messages</a> and <a href="system_messages.html">system messages</a>
-        usually go through <code>SendMsg()</code> -> <code>m_NetClient.Send(&Packet);</code>
+        However, <a href="game_messages.html">game messages</a>
+        and <a href="system_messages.html">system messages</a>
+        usually go through <code>SendMsg()</code>
+        -> <code>m_NetClient.Send(&Packet);</code>
         where they end up here:
         <pre class="code-snippet">
             <code>
@@ -187,31 +195,36 @@
             </code>
         </pre>
         As the name suggests, <code>m_Connection.QueueChunk()</code> only puts
-        these messages into a <em>queue</em> of so-called chunks; no packet header is created
-        and no data is being sent over the network yet. For now the messages only get
-        collected in a queue.
-        This queue is then sent as soon as it is full or a message with the flag
-        <code>MSGFLAG_FLUSH</code> is sent. When <code>MSGFLAG_FLUSH</code> is sent,
-        all messages in the queue get their own chunk header and in the very beginning of
-        the UDP packet, the packet header includes one field stating the amount of chunks in the packet.
+        these messages into a <em>queue</em> of so-called chunks; no packet
+        header is created and no data is being sent over the network yet. For
+        now the messages only get collected in a queue.
+        This queue is then sent as soon as it is full or a message with the
+        flag <code>MSGFLAG_FLUSH</code> is
+        sent. When <code>MSGFLAG_FLUSH</code> is sent, all messages in the
+        queue get their own chunk header and in the very beginning of the UDP
+        packet, the packet header includes one field stating the amount of
+        chunks in the packet.
         <br>
         <br>
-        This is probably done for performance reasons: to avoid wasting bandwidth on Teeworlds/UDP/IP headers
-        when non time critical messages are being sent that are followed by other messages anyways;
-        messages are bundled up and sent together.
+        This is probably done for performance reasons: to avoid wasting
+        bandwidth on Teeworlds/UDP/IP headers when non time critical messages
+        are being sent that are followed by other messages anyways; messages
+        are bundled up and sent together.
         <br>
         <br>
-        If you are calling <code>SendMsg()</code> and care about the time delay, make sure to use the
-        <code>MSGFLAG_FLUSH</code> flag otherwise it might be slightly delayed. The delay is not very dramatic
-        since flushes happen quite frequently so it should only be used for super time sensitive things such as
-        user inputs or tee positions.
+        If you are calling <code>SendMsg()</code> and care about the time
+        delay, make sure to use the <code>MSGFLAG_FLUSH</code> flag otherwise
+        it might be slightly delayed. The delay is not very dramatic since
+        flushes happen quite frequently so it should only be used for super
+        time sensitive things such as user inputs or tee positions.
         <br>
         <br>
-        Let's illustrate chunks and flushing via a real world example.
-        When a client connects to a server, the first packet received with multiple chunks is
-        <a href="traffic.html#srv_cl_motd_sett_rdy">Motd, Server Settings, Ready</a>.
-        This happens when <code>OnClientConnected()</code> is called, which is the function where
-        the MOTD and server settings are sent.
+        Let's illustrate chunks and flushing via a real world example. When a
+        client connects to a server, the first packet received with multiple
+        chunks is <a href="traffic.html#srv_cl_motd_sett_rdy">Motd, Server
+        Settings, Ready</a>. This happens
+        when <code>OnClientConnected()</code> is called, which is the function
+        where the MOTD and server settings are sent.
         <pre class="code-snippet">
             <code>
     void CGameContext::OnClientConnected(int ClientID, bool Dummy, bool AsSpec)
@@ -248,11 +261,11 @@
     }
             </code>
         </pre>
-        Note that the call to <code>SendPackMsg()</code>
-        contains the flag <code>MSGFLAG_VITAL</code>, not <code>MSGFLAG_FLUSH</code>
-        so they are just added to the queue rather than being sent right away.
-        Directly after <code>OnClientConnected()</code> is called,
-        <code>SendConnectionReady()</code> gets called.
+        Note that the call to <code>SendPackMsg()</code> contains the
+        flag <code>MSGFLAG_VITAL</code>, not <code>MSGFLAG_FLUSH</code> so
+        they are just added to the queue rather than being sent right
+        away. Directly after <code>OnClientConnected()</code> is
+        called, <code>SendConnectionReady()</code> gets called.
         <pre class="code-snippet">
             <code>
     GameServer()->OnClientConnected(ClientID, ConnectAsSpec);
@@ -268,11 +281,11 @@
     }
             </code>
         </pre>
-        This time the flag <code>MSGFLAG_FLUSH</code> is used
-        which causes the whole queue (currently MOTD, Settings) to be sent,
-        including the newly added CON_READY. Basically we're queueing 3 messages
-        and sending them together, but this is all happening in the same tick
-        so it feels instant.
+        This time the flag <code>MSGFLAG_FLUSH</code> is used which causes the
+        whole queue (currently MOTD, Settings) to be sent, including the newly
+        added CON_READY. Basically we're queueing 3 messages and sending them
+        together, but this is all happening in the same tick so it feels
+        instant.
         <br>
         <br>
         So these three pseudocode method calls:
@@ -308,8 +321,8 @@
                 with examples about int packing.
             </blockquote>
             <br>
-            All integer numbers sent through the network are packed using a custom
-            Teeworlds-specific packer.
+            All integer numbers sent through the network are packed using
+            a custom Teeworlds-specific packer.
             <br>
             Even though it's a custom packer, the numbers 0-63
             are pretty much the standard binary representation;<br>
@@ -328,19 +341,23 @@
     Format: ESDDDDDD EDDDDDDD EDD... Extended, Data, Sig
                 </code>
             </pre>
-            This means that the second bit of the first byte of the integer is its <em>sign bit</em>:
-            whether or not the number is signed (that is, negative). If this byte is <code>1</code>,
-            the number is negative. If this byte is <code>0</code>, the number is positive.
+            This means that the second bit of the first byte of the integer is
+            its <em>sign bit</em>: whether or not the number is signed (that
+            is, negative). If this byte is <code>1</code>, the number is
+            negative. If this byte is <code>0</code>, the number is positive.
             <br>
-            The first bit of every byte is the <em>extension bit</em>. If it is set to <code>1</code>,
-            another byte is following. If it is set to <code>0</code>, the current byte is the last byte.
-            This extension bit allows you to send small numbers (-62 to +63) as a single byte over the network.
-            It also means that technically the protocol allows numbers of any size; however, this is advised against
-            as they are read into a 4-byte-long C++ <code>int</code>.
+            The first bit of every byte is the <em>extension bit</em>. If it
+            is set to <code>1</code>, another byte is following. If it is set
+            to <code>0</code>, the current byte is the last byte. This
+            extension bit allows you to send small numbers (-62 to +63) as a
+            single byte over the network. It also means that technically the
+            protocol allows numbers of any size; however, this is advised
+            against as they are read into a 4-byte-long C++ <code>int</code>.
             <br>
             <br>
             Note that the byte order is little endian.
-            The smallest possible two byte number, 64, is represented as the bits <code>10000000 00000001</code>.<br>
+            The smallest possible two byte number, 64, is represented as the
+            bits <code>10000000 00000001</code>.<br>
             This number 64 can be dissected as so:
             <pre class="code-snippet">
                 <code>
@@ -376,11 +393,13 @@
         <hr>
         <h2 id="string_packing"><a href="#string_packing">String packing</a></h2>
         <p>
-            When strings are sent via the network, they are sent as plain C strings.
-            They do not contain a length, and they have to be null terminated.
+            When strings are sent via the network, they are sent as plain C
+            strings. They do not contain a length, and they have to be null
+            terminated.
             <br>
             <br>
-            The receiver can then use different types of sanitizers when unpacking the string:
+            The receiver can then use different types of sanitizers when
+            unpacking the string:
             <ul>
                 <li>
                     <a href="https://github.com/teeworlds/teeworlds/blob/26d24ec061d44e6084b2d77a9b8a0a48e354eba6/src/engine/shared/packer.h#L39">
@@ -389,7 +408,9 @@
                     <a href="https://github.com/teeworlds/teeworlds/blob/26d24ec061d44e6084b2d77a9b8a0a48e354eba6/src/base/system.c#L2209-L2219">
                         str_sanitize(char *)
                     </a>
-                    which makes sure that the string only contains characters between 32 and 255, plus the control characters \r, \n, and \t
+                    which makes sure that the string only contains characters
+                    between 32 and 255, plus the control characters \r, \n,
+                    and \t
                 </li>
                 <li>
                     <a href="https://github.com/teeworlds/teeworlds/blob/26d24ec061d44e6084b2d77a9b8a0a48e354eba6/src/engine/shared/packer.h#L40">
@@ -398,7 +419,8 @@
                     <a href="https://github.com/teeworlds/teeworlds/blob/26d24ec061d44e6084b2d77a9b8a0a48e354eba6/src/base/system.c#L2157-L2167">
                         str_sanitize_cc(char *)
                     </a>
-                    which makes sure that the string only contains characters between 32 and 255
+                    which makes sure that the string only contains characters
+                    between 32 and 255
                 </li>
                 <li>
                     <a href="https://github.com/teeworlds/teeworlds/blob/26d24ec061d44e6084b2d77a9b8a0a48e354eba6/src/engine/shared/packer.h#L41">
@@ -414,7 +436,8 @@
         <hr>
         <h2 id="raw_packing"><a href="#raw_packing">Raw packing</a></h2>
         <p>
-            If you want to send raw bytes over the network, the Teeworlds protocol got you covered.
+            If you want to send raw bytes over the network, the Teeworlds
+            protocol got you covered.
             <br>
             There is
             <a href="https://github.com/teeworlds/teeworlds/blob/26d24ec061d44e6084b2d77a9b8a0a48e354eba6/src/engine/shared/packer.cpp#L68-L85">
@@ -426,32 +449,39 @@
             </a>
             <br>
             <br>
-            They will just send and receive byte by byte the raw data you give it.
-            Note that while reading bytes you have to know the size in advance. The raw data does not include a size
-            field or is terminated in any way.
+            They will just send and receive byte by byte the raw data you give
+            it. Note that while reading bytes you have to know the size in
+            advance. The raw data does not include a size field or is
+            terminated in any way.
             <br>
-            Raw data can only be used in contexts where the length is known to the recipient.
-            This usually happens by a leading <a href="#int_packing">integer field</a> holding the size.
+            Raw data can only be used in contexts where the length is known to
+            the recipient. This usually happens by a leading
+            <a href="#int_packing">integer field</a> holding the size.
         </p>
         <hr>
         <h2 id="huffman"><a href="#huffman">Huffman compression</a></h2>
         <p>
-            Packets can be compressed using Huffman compression.
-            The Teeworlds packet header is never compressed, only its payload.
-            The packet header sets the COMPRESSION flag if the payload is compressed.
-            Usually corresponding packets are compressed, but technically every packet could be compressed or not.
+            Packets can be compressed using Huffman compression. The Teeworlds
+            packet header is never compressed, only its payload. The packet
+            header sets the COMPRESSION flag if the payload is
+            compressed. Usually corresponding packets are compressed, but
+            technically every packet could be compressed or not.
             <br>
             <br>
-            The Huffman compression algorithm is not specific to Teeworlds. To understand its fundamentals you
-            can simply check out any non-Teeworlds related Huffman documentation like this <a href="https://www.youtube.com/watch?v=iiGZ947Tcck">YouTube video</a>.
-            Huffman compression depends on a weight tree, so if you reimplement Huffman yourself
-            make sure it uses the same weight tree as the official Teeworlds implementation does.
+            The Huffman compression algorithm is not specific to Teeworlds.
+            To understand its fundamentals you can simply check out any
+            non-Teeworlds related Huffman documentation like
+            this <a href="https://www.youtube.com/watch?v=iiGZ947Tcck">YouTube
+            video</a>. Huffman compression depends on a weight tree, so if you
+            reimplement Huffman yourself make sure it uses the same weight
+            tree as the official Teeworlds implementation does.
             The official Teeworlds frequency table can be found
             <a href="https://github.com/teeworlds/teeworlds/blob/26d24ec061d44e6084b2d77a9b8a0a48e354eba6/src/engine/shared/huffman.cpp#L7-L20">
                 here</a>.
             <br>
-            But chances are you do not have to reimplement the Huffman algorithm
-            even if you want to build a server or client in a new programming language.
+            But chances are you do not have to reimplement the Huffman
+            algorithm even if you want to build a server or client in a new
+            programming language.
             There are already community implementations for
             <a href="https://github.com/edg-l/TeeAI/blob/18ae5eac39e82a882e751c01df2f3b1896e6ba4c/engine/huffman.py">
                 Python,
