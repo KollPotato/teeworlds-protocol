@@ -274,16 +274,19 @@
         <h2 id="NETMSG_SNAP"><a href="#NETMSG_SNAP">NETMSG_SNAP</a></h2>
         <p>
             <table>
-                <tr><th>Sender:</th><td>TODO</td></tr>
-                <tr><th>Recipient:</th><td>TODO</td></tr>
+                <tr><th>Sender:</th><td>Server</td></tr>
+                <tr><th>Recipient:</th><td>Client</td></tr>
                 <tr><th>Message ID:</th><td>5</td></tr>
                 <tr>
                     <th>Response to:</th>
-                    <td>TODO</td>
+                    <td>Updates in the world</td>
                 </tr>
                 <tr>
                     <th>Expected response:</th>
-                    <td>TODO</td>
+                    <td>
+                            The client acknowledges the <a href="system_messages.html#NETMSG_SNAP_game_tick">Game tick</a>
+                            in the message <a href="system_messages.html#NETMSG_INPUT_ack_game_tick">NETMSG_INPUT</a>
+                    </td>
                 </tr>
             </table>
             <table>
@@ -291,12 +294,63 @@
                     <th>Argument name</th>
                     <th>Type</th>
                     <th>Note</th>
+                </r>
+                <tr>
+                    <td id="NETMSG_SNAP_game_tick"><a href="#NETMSG_SNAP_game_tick">Game tick</a></td>
+                    <td><a href="fundamentals.html#int_packing">Int</a></td>
+                    <td>
+                        TODO
+                    </td>
                 </tr>
                 <tr>
-                    <td id="NETMSG_SNAP_todo"><a href="#NETMSG_SNAP_todo">TODO</a></td>
-                    <td><a href="fundamentals.html#string_packing">String</a></td>
+                    <td id="NETMSG_SNAP_delta_tick"><a href="#NETMSG_SNAP_delta_tick">Delta tick</a></td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
-                    <td>TODO</td>
+                    <td>
+                        TODO
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NETMSG_SNAP_num_parts"><a href="#NETMSG_SNAP_num_parts">Num parts</a></td>
+                    <td><a href="fundamentals.html#int_packing">Int</a></td>
+                    <td>
+                        TODO
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NETMSG_SNAP_part"><a href="#NETMSG_SNAP_part">Part</a></td>
+                    <td><a href="fundamentals.html#int_packing">Int</a></td>
+                    <td>
+                        TODO
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NETMSG_SNAP_crc"><a href="#NETMSG_SNAP_crc">Crc</a></td>
+                    <td><a href="fundamentals.html#int_packing">Int</a></td>
+                    <td>
+                        TODO
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NETMSG_SNAP_part_size"><a href="#NETMSG_SNAP_part_size">Part size</a></td>
+                    <td><a href="fundamentals.html#int_packing">Int</a></td>
+                    <td>
+                        The size of this part. Meaning the size in bytes of the next raw data field.
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NETMSG_SNAP_data"><a href="#NETMSG_SNAP_data">Data</a></td>
+                    <td><a href="fundamentals.html#raw_packing">Raw</a></td>
+                    <td>
+                        The snapshot data. Which is a bunch of packed ints.
+                        The first is the amount of removed items.
+                        The second is the amount of item deltas.
+                        The third a unused zero byte.
+                        And the following ints are all snap items.
+                        You can read more about snap items and the structure
+                        of this data field in the
+                        <a href="snap_items.html">snap items</a>
+                        section.
+                    </td>
                 </tr>
             </table>
         </p>
