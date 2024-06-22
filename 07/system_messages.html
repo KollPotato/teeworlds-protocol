@@ -809,7 +809,36 @@
                     <th><strong>Expected response:</strong></th><td>None</td>
                 </tr>
             </table>
-            empty snapshot
+            <table>
+                <tr>
+                    <th>Argument name</th>
+                    <th>Type</th>
+                    <th>Note</th>
+                </tr>
+                <tr>
+                    <td id="NETMSG_SNAPEMPTY_todo"><a href="#NETMSG_SNAPEMPTY_game_tick">Game tick</a></td>
+                    <td><a href="fundamentals.html#int_packing">Int</a></td>
+                    <td>TODO</td>
+                </tr>
+                <tr>
+                    <td id="NETMSG_SNAPEMPTY_todo"><a href="#NETMSG_SNAPEMPTY_delta_tick">Delta tick</a></td>
+                    <td><a href="fundamentals.html#int_packing">Int</a></td>
+                    <td>TODO</td>
+                </tr>
+            </table>
+            A empty snapshot without any snap items. Only used to sync the tick.
+            Sent by the server in
+            <a href="https://github.com/teeworlds/teeworlds/blob/a1911c8f7d8458fb4076ef8e7651e8ef5e91ab3e/src/engine/server/server.cpp#L623-L626">
+                    CServer::DoSnapshot()
+            </a>
+            <pre class="code-snippet">
+                <code>
+    CMsgPacker Msg(NETMSG_SNAPEMPTY, true);
+    Msg.AddInt(m_CurrentGameTick);
+    Msg.AddInt(m_CurrentGameTick-DeltaTick);
+    SendMsg(&Msg, MSGFLAG_FLUSH, i);
+                </code>
+            </pre>
         </p>
         <hr>
         <h2 id="NETMSG_SNAPSINGLE"><a href="#NETMSG_SNAPSINGLE">NETMSG_SNAPSINGLE</a></h2>
