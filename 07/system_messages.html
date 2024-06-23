@@ -506,7 +506,20 @@
                     <td id="NETMSG_SERVERINFO_skill_level"><a href="#NETMSG_SERVERINFO_skill_level">Skill level</a></td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
                     <td>
-                        TODO
+                        <ul>
+                            <li>0 - Casual</li>
+                            <li>1 - Normal</li>
+                            <li>2 - Competitive</li>
+                        </ul>
+                        <p>
+                            0 is meant to be used for public servers where anyone is welcome.
+                            And 2 is meant to be used for more elite servers where beginners are not welcome.
+                            <br>
+                            <br>
+                            This value is used to display a difficulty icon in the server browser.
+                            Server admins can set the config <code>sv_skill_level</code> to change this value.
+                        </p>
+                        <img src="../img/skill_level.png" alt="skill level icons in browser">
                     </td>
                 </tr>
                 <tr>
