@@ -3550,16 +3550,12 @@ void CInfoMessages::OnMessage(int MsgType, void *pRawMsg)
                     <th><strong>Flags:</strong></th><td><a href="fundamentals.html#sequence_numbers">MSGFLAG_VITAL</a></td>
                 </tr>
             </table>
-            <table>
-                <tr>
-                    <th>Argument name</th>
-                    <th>Type</th>
-                    <th>Note</th>
-                </tr>
-                <tr>
-                    <td colspan="3">None</td>
-                </tr>
-            </table>
+            Message to request game pause and unpause.
+            Will pause the game for everyone if one person sends it and if the server allows it.
+            Will unpause the game if everyone send it.
+            <br>
+            <br>
+            Needs <code>sv_player_ready_mode</code> set to <code>1</code> on the server side.
             <pre class="code-snippet">
                 <code>
     void CGameClient::SendReadyChange()
