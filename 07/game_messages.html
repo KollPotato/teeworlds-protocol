@@ -2987,19 +2987,19 @@ void CInfoMessages::OnMessage(int MsgType, void *pRawMsg)
                 <tr>
                     <th><strong>Response to:</strong></th>
                     <td>
-                        TODO
+                            The client running the console command <code>team</code> or clicking one of the team join buttons in the menu.
                     </td>
                 </tr>
                 <tr>
                     <th><strong>Expected response:</strong></th>
                     <td>
-                        TODO
+                        <a href="#NETMSGTYPE_SV_TEAM">NETMSGTYPE_SV_TEAM</a> (Only on success. If the team is full, there is a ratelimit or any other error the server will not respond)
                     </td>
                 </tr>
                 <tr>
                     <th><strong>Flags:</strong></th>
                     <td>
-                        TODO
+                        <a href="fundamentals.html#sequence_numbers">MSGFLAG_VITAL</a>
                     </td>
                 </tr>
             </table>
@@ -3017,10 +3017,56 @@ void CInfoMessages::OnMessage(int MsgType, void *pRawMsg)
                     </td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
                     <td>
-                        TODO
+                        Can be one of those:
+                        <ul>
+                            <li><span class="num">-1</span> - TEAM_SPECTATORS</li>
+                            <li><span class="num">0</span>  - TEAM_RED</li>
+                            <li><span class="num">1</span>  - TEAM_BLUE</li>
+                        </ul>
                     </td>
                 </tr>
             </table>
+            Unpacked by the server in
+            <a href="https://github.com/teeworlds/teeworlds/blob/a1911c8f7d8458fb4076ef8e7651e8ef5e91ab3e/src/game/server/gamecontext.cpp#L1016-L1035">
+                    gamecontext.cpp
+            </a>
+            <pre class="code-snippet">
+                <code>
+    else if(MsgID == NETMSGTYPE_CL_SETTEAM && m_pController-&gt;IsTeamChangeAllowed())
+    {
+            CNetMsg_Cl_SetTeam *pMsg = (CNetMsg_Cl_SetTeam *)pRawMsg;
+
+            if(pPlayer-&gt;GetTeam() == pMsg-&gt;m_Team ||
+                    (Config()-&gt;m_SvSpamprotection && pPlayer-&gt;m_LastSetTeamTick && pPlayer-&gt;m_LastSetTeamTick+Server()-&gt;TickSpeed()*3 &gt; Server()-&gt;Tick()) ||
+                    (pMsg-&gt;m_Team != TEAM_SPECTATORS && m_LockTeams) || pPlayer-&gt;m_TeamChangeTick &gt; Server()-&gt;Tick())
+                    return;
+
+            pPlayer-&gt;m_LastSetTeamTick = Server()-&gt;Tick();
+
+            // Switch team on given client and kill/respawn him
+            if(m_pController-&gt;CanJoinTeam(pMsg-&gt;m_Team, ClientID) && m_pController-&gt;CanChangeTeam(pPlayer, pMsg-&gt;m_Team))
+            {
+                    if(pPlayer-&gt;GetTeam() == TEAM_SPECTATORS || pMsg-&gt;m_Team == TEAM_SPECTATORS)
+                            m_VoteUpdate = true;
+                    pPlayer-&gt;m_TeamChangeTick = Server()-&gt;Tick()+Server()-&gt;TickSpeed()*3;
+                    m_pController-&gt;DoTeamChange(pPlayer, pMsg-&gt;m_Team);
+            }
+    }
+                </code>
+            </pre>
+            The server never responds with an error message. In case of failed team change the server will silently drop the team change request.
+            The client is supposed to do the error handling locally. Because it knows about all the cases where team changes will fail.
+            So the client deactivates the menu buttons locally if a team change is impossible. This allows the client to fully translate the error messages.
+
+            So the client keeps track of the server settings like
+            <a href="https://github.com/teeworlds/teeworlds/blob/a1911c8f7d8458fb4076ef8e7651e8ef5e91ab3e/src/game/client/components/menus_ingame.cpp#L27-L49">
+                locked teams and in game slots.
+            </a>
+            And it also has to check if the teams are balanced
+            <a href="https://github.com/teeworlds/teeworlds/blob/a1911c8f7d8458fb4076ef8e7651e8ef5e91ab3e/src/game/client/components/menus_ingame.cpp#L113-L166">
+                by counting the amount of team members locally
+            </a>
+            before doing a team change request.
         </p>
         <hr>
         <h2 id="NETMSGTYPE_CL_SETSPECTATORMODE"><a href="#NETMSGTYPE_CL_SETSPECTATORMODE">NETMSGTYPE_CL_SETSPECTATORMODE</a></h2>
