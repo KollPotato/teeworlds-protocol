@@ -3708,7 +3708,12 @@ void CInfoMessages::OnMessage(int MsgType, void *pRawMsg)
                     <td id="NETMSGTYPE_CL_VOTE_vote"><a href="#NETMSGTYPE_CL_VOTE_vote">Vote</a></td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
                     <td>
-                        TODO
+                        The value can be one of those
+                        <ul>
+                            <li>-1 -  VOTE_CHOICE_NO</li>
+                            <li> (0 -  VOTE_CHOICE_PASS) server internal only</li>
+                            <li> 1 -  VOTE_CHOICE_YES</li>
+                        </ul>
                     </td>
                 </tr>
             </table>
