@@ -3090,7 +3090,7 @@ void CInfoMessages::OnMessage(int MsgType, void *pRawMsg)
                 <tr>
                     <th><strong>Expected response:</strong></th>
                     <td>
-                        TODO
+                        <a href="#NETMSGTYPE_SV_GAMEMSG">NETMSGTYPE_SV_GAMEMSG</a> (GAMEMSG_SPEC_INVALIDID)
                     </td>
                 </tr>
                 <tr>
@@ -3131,10 +3131,17 @@ void CInfoMessages::OnMessage(int MsgType, void *pRawMsg)
                     </td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
                     <td>
-                        TODO
+                            Should be either the ClientId when the mode is SPEC_PLAYER
+                            or -1 in all other modes.
                     </td>
                 </tr>
             </table>
+            On success the server will update the snap item
+            <a href="snap_items.html#obj_spectator_info">obj_spectator_info</a>.
+            On error the server will respond with
+            <a href="#NETMSGTYPE_SV_GAMEMSG">NETMSGTYPE_SV_GAMEMSG</a> (GAMEMSG_SPEC_INVALIDID).
+            <br>
+            <br>
             Sent by the client if the spectate next or spectate previous bind is triggerd.
             Or if the client user picks a player in the specate menu. Or selects free view in the spectate menu.
             Or if the user "clicks" on a player in free view.
@@ -3145,20 +3152,39 @@ void CInfoMessages::OnMessage(int MsgType, void *pRawMsg)
                 <code>
     void CSpectator::Spectate(int SpecMode, int SpectatorID)
     {
-        if(Client()->State() == IClient::STATE_DEMOPLAYBACK)
+        if(Client()-&gt;State() == IClient::STATE_DEMOPLAYBACK)
         {
-            m_pClient->m_DemoSpecMode = clamp(SpecMode, 0, NUM_SPECMODES-1);
-            m_pClient->m_DemoSpecID = clamp(SpectatorID, -1, MAX_CLIENTS-1);
+            m_pClient-&gt;m_DemoSpecMode = clamp(SpecMode, 0, NUM_SPECMODES-1);
+            m_pClient-&gt;m_DemoSpecID = clamp(SpectatorID, -1, MAX_CLIENTS-1);
             return;
         }
 
-        if(m_pClient->m_Snap.m_SpecInfo.m_SpecMode == SpecMode && (SpecMode != SPEC_PLAYER || m_pClient->m_Snap.m_SpecInfo.m_SpectatorID == SpectatorID))
+        if(m_pClient-&gt;m_Snap.m_SpecInfo.m_SpecMode == SpecMode && (SpecMode != SPEC_PLAYER || m_pClient-&gt;m_Snap.m_SpecInfo.m_SpectatorID == SpectatorID))
             return;
 
         CNetMsg_Cl_SetSpectatorMode Msg;
         Msg.m_SpecMode = SpecMode;
         Msg.m_SpectatorID = SpectatorID;
-        Client()->SendPackMsg(&Msg, MSGFLAG_VITAL);
+        Client()-&gt;SendPackMsg(&Msg, MSGFLAG_VITAL);
+    }
+                </code>
+            </pre>
+            Unpacked by the server in
+            <a href="https://github.com/teeworlds/teeworlds/blob/a1911c8f7d8458fb4076ef8e7651e8ef5e91ab3e/src/game/server/gamecontext.cpp#L1036-L1046">
+                gamecontext.cpp
+            </a>
+            <pre class="code-snippet">
+                <code>
+    else if (MsgID == NETMSGTYPE_CL_SETSPECTATORMODE && !m_World.m_Paused)
+    {
+            CNetMsg_Cl_SetSpectatorMode *pMsg = (CNetMsg_Cl_SetSpectatorMode *)pRawMsg;
+
+            if(Config()-&gt;m_SvSpamprotection && pPlayer-&gt;m_LastSetSpectatorModeTick && pPlayer-&gt;m_LastSetSpectatorModeTick+Server()-&gt;TickSpeed() &gt; Server()-&gt;Tick())
+                    return;
+
+            pPlayer-&gt;m_LastSetSpectatorModeTick = Server()-&gt;Tick();
+            if(!pPlayer-&gt;SetSpectatorID(pMsg-&gt;m_SpecMode, pMsg-&gt;m_SpectatorID))
+                    SendGameMsg(GAMEMSG_SPEC_INVALIDID, ClientID);
     }
                 </code>
             </pre>
