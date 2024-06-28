@@ -3486,32 +3486,40 @@ void CInfoMessages::OnMessage(int MsgType, void *pRawMsg)
                 <tr>
                     <th><strong>Response to:</strong></th>
                     <td>
-                        TODO
+                            Client console command <code>kill</code>
                     </td>
                 </tr>
                 <tr>
                     <th><strong>Expected response:</strong></th>
                     <td>
-                        TODO
+                        <a href="#NETMSGTYPE_SV_KILLMSG">NETMSGTYPE_SV_KILLMSG</a> (WEAPON_SELF) &amp;
+                        <a href="snap_items.html#event_sound_world">event_sound_world</a> (SOUND_PLAYER_DIE=16) &amp;
+                        <a href="snap_items.html#event_death">event_death</a>
                     </td>
                 </tr>
                 <tr>
                     <th><strong>Flags:</strong></th>
                     <td>
-                        TODO
+                        <a href="fundamentals.html#sequence_numbers">MSGFLAG_VITAL</a>
                     </td>
                 </tr>
             </table>
-            <table>
-                <tr>
-                    <th>Argument name</th>
-                    <th>Type</th>
-                    <th>Note</th>
-                </tr>
-                <tr>
-                    <td colspan="3">None</td>
-                </tr>
-            </table>
+            Requests selfkill. The server might block it. Processed by the server in
+            <a href="https://github.com/teeworlds/teeworlds/blob/a1911c8f7d8458fb4076ef8e7651e8ef5e91ab3e/src/game/server/gamecontext.cpp#L1058-L1065">
+                    gamecontext.cpp
+            </a>
+            <pre class="code-snippet">
+                <code>
+    else if (MsgID == NETMSGTYPE_CL_KILL && !m_World.m_Paused)
+    {
+            if(pPlayer-&gt;m_LastKillTick && pPlayer-&gt;m_LastKillTick+Server()-&gt;TickSpeed()*3 &gt; Server()-&gt;Tick())
+                    return;
+
+            pPlayer-&gt;m_LastKillTick = Server()-&gt;Tick();
+            pPlayer-&gt;KillCharacter(WEAPON_SELF);
+    }
+                </code>
+            </pre>
         </p>
         <hr>
         <h2 id="NETMSGTYPE_CL_READYCHANGE"><a href="#NETMSGTYPE_CL_READYCHANGE">NETMSGTYPE_CL_READYCHANGE</a></h2>
