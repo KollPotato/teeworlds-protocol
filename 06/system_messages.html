@@ -327,7 +327,17 @@
                     <td id="NETMSG_SNAP_crc"><a href="#NETMSG_SNAP_crc">Crc</a></td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
                     <td>
-                        TODO
+                            The crc (cyclic redundancy check) is used as a checksum verifying the integrity of the snapshot.
+                            It is all snapshot item payloads summed together into one 32 bit integer.
+                            The reference implementation might overflow the crc and so should you to match the exact value.
+                            More details on how to calculate the crc can be seen in the
+                            <a href="https://protocol-docs.teeframe.com/packets/snaps-concept#calculating-crc">teeframe documentation</a>.
+                            <br>
+                            <br>
+                            Important to understand is that the crc is not applied to only the snap items sent in this net message but the full snapshot.
+                            Every snap msg is just a delta that might add or remove items from a previous snapshot.
+                            So if the client already knows about a snapshot with 3 items and then another NETMSG_SNAP comes in with 3 additional items as payload
+                            the crc has to be calculated on all 6 items that are now in the fully unpacked snapshot.
                     </td>
                 </tr>
                 <tr>
@@ -388,16 +398,19 @@
         <h2 id="NETMSG_SNAPSINGLE"><a href="#NETMSG_SNAPSINGLE">NETMSG_SNAPSINGLE</a></h2>
         <p>
             <table>
-                <tr><th>Sender:</th><td>TODO</td></tr>
-                <tr><th>Recipient:</th><td>TODO</td></tr>
+                <tr><th>Sender:</th><td>Server</td></tr>
+                <tr><th>Recipient:</th><td>Client</td></tr>
                 <tr><th>Message ID:</th><td>7</td></tr>
                 <tr>
                     <th>Response to:</th>
-                    <td>TODO</td>
+                    <td>Updates in the world</td>
                 </tr>
                 <tr>
                     <th>Expected response:</th>
-                    <td>TODO</td>
+                    <td>
+                            The client acknowledges the <a href="system_messages.html#NETMSG_SNAPSINGLE_game_tick">Game tick</a>
+                            in the message <a href="system_messages.html#NETMSG_INPUT_ack_game_tick">NETMSG_INPUT</a>
+                    </td>
                 </tr>
             </table>
             <table>
@@ -407,12 +420,53 @@
                     <th>Note</th>
                 </tr>
                 <tr>
-                    <td id="NETMSG_SNAPSINGLE_todo"><a href="#NETMSG_SNAPSINGLE_todo">TODO</a></td>
-                    <td><a href="fundamentals.html#string_packing">String</a></td>
+                    <td id="NETMSG_SNAPSINGLE_game_tick"><a href="#NETMSG_SNAPSINGLE_game_tick">Game tick</a></td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
-                    <td>TODO</td>
+                    <td>
+                        TODO
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NETMSG_SNAPSINGLE_delta_tick"><a href="#NETMSG_SNAPSINGLE_delta_tick">Delta tick</a></td>
+                    <td><a href="fundamentals.html#int_packing">Int</a></td>
+                    <td>
+                        TODO
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NETMSG_SNAPSINGLE_crc"><a href="#NETMSG_SNAPSINGLE_crc">Crc</a></td>
+                    <td><a href="fundamentals.html#int_packing">Int</a></td>
+                    <td>
+                        The crc is a checksum. More details <a href="#NETMSG_SNAP_crc">here</a>.
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NETMSG_SNAPSINGLE_part_size"><a href="#NETMSG_SNAPSINGLE_part_size">Part size</a></td>
+                    <td><a href="fundamentals.html#int_packing">Int</a></td>
+                    <td>
+                        The size of this part. Meaning the size in bytes of the next raw data field.
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NETMSG_SNAPSINGLE_data"><a href="#NETMSG_SNAPSINGLE_data">Data</a></td>
+                    <td><a href="fundamentals.html#raw_packing">Raw</a></td>
+                    <td>
+                        The snapshot data. Which is a bunch of packed ints.
+                        The first is the amount of removed items.
+                        The second is the amount of item deltas.
+                        The third a unused zero byte.
+                        And the following ints are all snap items.
+                        You can read more about snap items and the structure
+                        of this data field in the
+                        <a href="snap_items.html">snap items</a>
+                        section.
+                    </td>
                 </tr>
             </table>
+            One full snapshot. If it does not fit into one message it will be split into
+            multiple parts and send as <a href="#NETMSG_SNAP">NETMSG_SNAP</a> instead.
+
+
         </p>
         <hr>
         <h2 id="NETMSG_SNAPSMALL"><a href="#NETMSG_SNAPSMALL">NETMSG_SNAPSMALL</a></h2>
