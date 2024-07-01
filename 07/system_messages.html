@@ -755,7 +755,8 @@
                     <td id="NETMSG_SNAP_delta_tick"><a href="#NETMSG_SNAP_delta_tick">Delta tick</a></td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
                     <td>
-                        TODO
+                            The base snapshot game tick which the delta was created from.
+                            Will be -1 for the first snapshot signaling it is a delta based on the empty snapshot.
                     </td>
                 </tr>
                 <tr>
@@ -856,7 +857,10 @@
                 <tr>
                     <td id="NETMSG_SNAPEMPTY_todo"><a href="#NETMSG_SNAPEMPTY_delta_tick">Delta tick</a></td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
-                    <td>TODO</td>
+                    <td>
+                            The base snapshot game tick which the delta was created from.
+                            Will be -1 for the first snapshot signaling it is a delta based on the empty snapshot.
+                    </td>
                 </tr>
             </table>
             A empty snapshot without any snap items. Only used to sync the tick.
@@ -915,7 +919,8 @@
                     <td id="NETMSG_SNAPSINGLE_delta_tick"><a href="#NETMSG_SNAPSINGLE_delta_tick">Delta tick</a></td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
                     <td>
-                        TODO
+                        The base snapshot game tick which the delta was created from.
+                        Will be -1 for the first snapshot signaling it is a delta based on the empty snapshot.
                     </td>
                 </tr>
                 <tr>

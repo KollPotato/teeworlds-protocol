@@ -87,6 +87,10 @@
                 <a href="system_messages.html#NETMSG_SNAP_delta_tick">game tick</a> of the snapshot that was used as a base for the delta.
                 So the client is supposed to keep a few snapshots with their game ticks locally. To then find the correct one
                 to unpack new deltas against.
+                <br>
+                <br>
+                Also the first snapshot can be unpacked like a delta. The delta tick (game tick of the delta base) will be the magic value -1.
+                And the delta can be applied to an empty snapshot.
         </p>
 
         <h2 id="known_size_items"><a href="#known_size_items">Known size table</a></h2>
