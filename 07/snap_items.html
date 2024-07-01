@@ -610,7 +610,24 @@
                     int m_Precision;<br>
                     int m_RaceFlags;<br>
                 </td>
-                <td>desc</td>
+                <td>
+                        An example server side implementation can be seen in the unique clans'
+                        <a href="https://github.com/unique-clan/unique-race/blob/af034ce0c99f7409ff1cdc58fc6ad79ce5c5d145/src/game/server/gamecontroller.cpp#L823-L829">
+                            unique-race
+                        </a>
+                        modification.
+                        <pre class="code-snippet">
+                            <code>
+    int *pGameDataRace = (int*)Server()-&gt;SnapNewItem(24 + 26, 0, 3*4); // NETOBJTYPE_GAMEDATARACE
+    if(!pGameDataRace)
+            return;
+
+    pGameDataRace[0] = round_to_int(m_CurrentRecord * 1000);
+    pGameDataRace[1] = 3; // m_Precision
+    pGameDataRace[2] = (1&lt;&lt;0) /* RACEFLAG_HIDE_KILLMSG */ | (1&lt;&lt;2) /* RACEFLAG_KEEP_WANTED_WEAPON */; // m_RaceFlags
+                            </code>
+                        </pre>
+                </td>
             </tr>
         </table>
     </div> <!-- content -->
