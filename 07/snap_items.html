@@ -139,7 +139,7 @@
                 which is a 3 byte integer but the tee only moved 10 units
                 since the last synced snapshot so the new snapshot only needs one byte to represent the coordinate of this tee.
                 It also means every unchanged value will be one null byte which then helps the huffman compression that is applied on top.
-                Because it works best if it is given consecutive bytes.
+                Because it works best if it is given consecutive repeating bytes.
                 <br>
                 <br>
                 The delta is created by the server against the last snapshot that the client
