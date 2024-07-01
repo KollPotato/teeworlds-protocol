@@ -54,7 +54,7 @@
                     There is a list of snap item sizes that is fixed.
                     That list is included in the client and server code.
                     since both parties already know the size it won't be included
-                    in the snap.
+                    in the snap. This is the majority of all traffic.
                 </li>
                 <li>
                     <strong>Unknown size snap items:</strong>
@@ -67,7 +67,10 @@
 
             <h2>Size list edge case</h2>
 
-            There are two snap items (obj_player_info_race and obj_game_data_race) that were added after the 0.7 release and their size
+            There are two snap items (
+            <a href="#obj_player_info_race">obj_player_info_race</a> and
+            <a href="#obj_game_data_race">obj_game_data_race</a>
+            ) that were added after the 0.7 release and their size
             is technically fixed and they should be included in the known size list.
             But since there was already a official client release without those items,
             they are intentionally removed from the list to stay backwards compatible.
@@ -94,7 +97,43 @@
             It shows the layout which always starts with the header containing the amount of deleted items.
             The amount of deltas and a unused zero field. Followed by snap items.
         </p>
-        <h2>Known size table</h2>
+        <h2>All snapshot items are deltas</h2>
+        <p>
+                The entire snapshot payload should always be seen as a delta to a previous snapshot.
+                The <a href="system_messages.html#NETMSG_SNAP_data">payload (data)</a> of a snapshot starts with a short header:
+                <ul>
+                    <li>NumDeletedItems</li>
+                    <li>NumUpdatedItems</li>
+                    <li>Unused</li>
+                </ul>
+                Those three values are <a href="fundamentals.html#int_packing">packed integers</a> so their size might be 1 to 4 bytes.
+                The header is followed by keys of items that were deleted. A item key is the combination of its item id and its item type.
+                Stored in one 4 byte integer where the first 2 bytes are its type and the 2 bytes in the end are its id.
+                After <strong>NumDeletedItems</strong> keys. There are <strong>NumUpdatedItems</strong> changed
+                <a href="#known_size_items">items</a>.
+                And changed is defined as items that have a different payload than the previous snapshot or items that were not
+                included in the previous snapshot. All item payloads are diffs. Meaning for example if a
+                <a href="#obj_character">obj_character</a> is sent with a <code>m_X</code> set to -4 it does not mean
+                that in the actual world there is a tee located at coordinate -4 it just means that this character
+                moved 4 units to the left to its previous known location. Same if <code>m_Health</code> is set to 0
+                it does not mean that the character is dead. It just means that the health did not change.
+                <br>
+                <br>
+                This allows the int packer to do its magic which performs well on small numbers. Let's say we have a big
+                map and a tee moving around on the x coordinate 16777215 which is a 3 byte integer but the tee only moved 10 units
+                since the last synced snapshot so the new snapshot only needs one byte to represent the coordinate of this tee.
+                It also means every unchanged value will be one null byte which then helps the huffman compression that is applied on top.
+                Because it works best if it is given consecutive bytes.
+                <br>
+                <br>
+                The delta is created by the server against the last snapshot that the client
+                <a href="system_messages.html#NETMSG_INPUT_ack_game_tick">acknowledged</a>.
+                The snap message also contains the
+                <a href="system_messages.html#NETMSG_SNAP_delta_tick">game tick</a> of the snapshot that was used as a base for the delta.
+                So the client is supposed to keep a few snapshots with their game ticks locally. To then find the correct one
+                to unpack new deltas against.
+        </p>
+        <h2 id="known_size_items"><a href="#known_size_items">Known size table</a></h2>
         <table>
             <tr>
                 <th>type_id</th>
