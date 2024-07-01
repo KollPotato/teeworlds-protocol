@@ -351,11 +351,16 @@
                     <td id="NETMSG_SNAP_data"><a href="#NETMSG_SNAP_data">Data</a></td>
                     <td><a href="fundamentals.html#raw_packing">Raw</a></td>
                     <td>
-                        The snapshot data. Which is a bunch of packed ints.
+                        The partial snapshot data. It should be only processed when all
+                        <a href="#NETMSG_SNAP_num_parts">Num parts</a> are assembled together.
+                        <br>
+                        <br>
+                        The snapshot data. Which is a bunch of <a href="fundamentals.html#int_packing">packed ints</a>.
                         The first is the amount of removed items.
                         The second is the amount of item deltas.
                         The third a unused zero byte.
-                        And the following ints are all snap items.
+                        Then there are "amount of removed items" repeated integers
+                        identifying the deleted items. Followed by "amount of item deltas" repeated snap items
                         You can read more about snap items and the structure
                         of this data field in the
                         <a href="snap_items.html">snap items</a>
@@ -451,11 +456,12 @@
                     <td id="NETMSG_SNAPSINGLE_data"><a href="#NETMSG_SNAPSINGLE_data">Data</a></td>
                     <td><a href="fundamentals.html#raw_packing">Raw</a></td>
                     <td>
-                        The snapshot data. Which is a bunch of packed ints.
+                        The snapshot data. Which is a bunch of <a href="fundamentals.html#int_packing">packed ints</a>.
                         The first is the amount of removed items.
                         The second is the amount of item deltas.
                         The third a unused zero byte.
-                        And the following ints are all snap items.
+                        Then there are "amount of removed items" repeated integers
+                        identifying the deleted items. Followed by "amount of item deltas" repeated snap items
                         You can read more about snap items and the structure
                         of this data field in the
                         <a href="snap_items.html">snap items</a>
@@ -936,7 +942,10 @@
                 <tr>
                     <td id="NETMSG_INPUT_ack_game_tick"><a href="#NETMSG_INPUT_ack_game_tick">Ack Game Tick</a></td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
-                    <td>TODO</td>
+                    <td>
+                        Informs the server it can now use the snapshot with this game tick as base for
+                        new <a href="snap_items.html#snapshot_deltas">delta snapshots</a>.
+                    </td>
                 </tr>
                 <tr>
                     <td id="NETMSG_INPUT_pred_tick"><a href="#NETMSG_INPUT_pred_tick">Prediction Tick</a></td>

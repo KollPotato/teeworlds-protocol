@@ -51,7 +51,45 @@
         the clients tee is colored in team colors. If the <a href="#obj_game_info">obj_game_info</a> would be after the
         <a href="#obj_client_info">obj_client_info</a> the client would not know yet about it and assume no teams are set.
 
-        <h2>Known size table</h2>
+        <h2 id="snapshot_deltas"><a href="#snapshot_deltas">All snapshot items are deltas</a></h2>
+        <p>
+                The entire snapshot payload should always be seen as a delta to a previous snapshot.
+                The <a href="system_messages.html#NETMSG_SNAP_data">payload (data)</a> of a snapshot starts with a short header:
+                <ul>
+                    <li>NumDeletedItems</li>
+                    <li>NumUpdatedItems</li>
+                    <li>Unused</li>
+                </ul>
+                Those three values are <a href="fundamentals.html#int_packing">packed integers</a> so their size might be 1 to 4 bytes.
+                The header is followed by keys of items that were deleted. A item key is the combination of its item id and its item type.
+                Stored in one 4 byte integer where the first 2 bytes are its type and the 2 bytes in the end are its id.
+                After <strong>NumDeletedItems</strong> keys. There are <strong>NumUpdatedItems</strong> changed
+                <a href="#known_size_items">items</a>.
+                And changed is defined as items that have a different payload than the previous snapshot or items that were not
+                included in the previous snapshot. All item payloads are diffs. Meaning for example if a
+                <a href="#obj_character">obj_character</a> is sent with a <code>m_X</code> set to -4 it does not mean
+                that in the actual world there is a tee located at coordinate -4 it just means that this character
+                moved 4 units to the left compared to its previous known location. Same if <code>m_Health</code> is set to 0
+                it does not mean that the character is dead. It just means that the health did not change.
+                <br>
+                <br>
+                This allows the int packer to do its magic which performs well on small numbers. Let's say we have a big
+                map and a tee moving around on the x coordinate 16777215 (maps that big are actually not possible this is just for the example sake)
+                which is a 3 byte integer but the tee only moved 10 units
+                since the last synced snapshot so the new snapshot only needs one byte to represent the coordinate of this tee.
+                It also means every unchanged value will be one null byte which then helps the huffman compression that is applied on top.
+                Because it works best if it is given consecutive bytes.
+                <br>
+                <br>
+                The delta is created by the server against the last snapshot that the client
+                <a href="system_messages.html#NETMSG_INPUT_ack_game_tick">acknowledged</a>.
+                The snap message also contains the
+                <a href="system_messages.html#NETMSG_SNAP_delta_tick">game tick</a> of the snapshot that was used as a base for the delta.
+                So the client is supposed to keep a few snapshots with their game ticks locally. To then find the correct one
+                to unpack new deltas against.
+        </p>
+
+        <h2 id="known_size_items"><a href="#known_size_items">Known size table</a></h2>
         <table>
             <tr>
                 <th>type_id</th>

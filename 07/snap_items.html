@@ -97,7 +97,7 @@
             It shows the layout which always starts with the header containing the amount of deleted items.
             The amount of deltas and a unused zero field. Followed by snap items.
         </p>
-        <h2>All snapshot items are deltas</h2>
+        <h2 id="snapshot_deltas"><a href="#snapshot_deltas">All snapshot items are deltas</a></h2>
         <p>
                 The entire snapshot payload should always be seen as a delta to a previous snapshot.
                 The <a href="system_messages.html#NETMSG_SNAP_data">payload (data)</a> of a snapshot starts with a short header:
@@ -115,12 +115,13 @@
                 included in the previous snapshot. All item payloads are diffs. Meaning for example if a
                 <a href="#obj_character">obj_character</a> is sent with a <code>m_X</code> set to -4 it does not mean
                 that in the actual world there is a tee located at coordinate -4 it just means that this character
-                moved 4 units to the left to its previous known location. Same if <code>m_Health</code> is set to 0
+                moved 4 units to the left compared to its previous known location. Same if <code>m_Health</code> is set to 0
                 it does not mean that the character is dead. It just means that the health did not change.
                 <br>
                 <br>
                 This allows the int packer to do its magic which performs well on small numbers. Let's say we have a big
-                map and a tee moving around on the x coordinate 16777215 which is a 3 byte integer but the tee only moved 10 units
+                map and a tee moving around on the x coordinate 16777215 (maps that big are actually not possible this is just for the example sake)
+                which is a 3 byte integer but the tee only moved 10 units
                 since the last synced snapshot so the new snapshot only needs one byte to represent the coordinate of this tee.
                 It also means every unchanged value will be one null byte which then helps the huffman compression that is applied on top.
                 Because it works best if it is given consecutive bytes.
