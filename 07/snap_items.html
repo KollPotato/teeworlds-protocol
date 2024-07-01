@@ -36,13 +36,19 @@
             Note there is also documentation about snapshots in <a href="https://github.com/heinrich5991/libtw2/blob/master/doc/snapshot.md">libtw2</a>.
             <br>
             <br>
-            The network messages NETMSG_SNAP, NETMSG_SNAPEMPTY and NETMSG_SNAPSINGLE
+            The network messages
+            <a href="system_messages.html#NETMSG_SNAP">NETMSG_SNAP</a>,
+            <a href="system_messages.html#NETMSG_SNAPEMPTY">NETMSG_SNAPEMPTY</a> and
+            <a href="system_messages.html#NETMSG_SNAPSINGLE">NETMSG_SNAPSINGLE</a>
             contain snapshots which represent the current game state.
-            The snapshot data contains snap items which represent things like tees, projectiles and similar.
-            All of those items are encoded as packed integers.
+            The <a href="system_messages.html#NETMSG_SNAP_data">snapshot data</a>
+            contains <a href="#snap_item">snap items</a> which represent things like
+            <a href="#obj_character">tees</a>, <a href="#obj_projectile">projectiles</a> and similar.
+            All of those items are encoded as
+            <a href="fundamentals.html#int_packing">packed integers</a>.
             The snapshot is built by the server and sent to the client.
 
-            <h2>Size list</h2>
+            <h2 id="snap_item"><a href="#snap_item">Snap item</a></h2>
 
             When it comes to byte layout that is sent over the network.
             There are two types of snap items:
@@ -55,6 +61,13 @@
                     That list is included in the client and server code.
                     since both parties already know the size it won't be included
                     in the snap. This is the majority of all traffic.
+                    <pre class="code-snippet">
+                        <code>
+    +---------+----+-----------+
+    | type_id | id | payload.. |
+    +---------+----+-----------+
+                        </code>
+                    </pre>
                 </li>
                 <li>
                     <strong>Unknown size snap items:</strong>
@@ -62,10 +75,18 @@
                     The items of which the client does not know the size yet.
                     Will contain a size field in the snapshot data.
                     Which is filled by the server.
+                    <pre class="code-snippet">
+                        <code>
+    +---------+----+------+-----------+
+    | type_id | id | size | payload.. |
+    +---------+----+------+-----------+
+                        </code>
+                    </pre>
                 </li>
             </ul>
+            For details on the payload check the <a href="#known_size_items">parameters in the table below</a>.
 
-            <h2>Size list edge case</h2>
+            <h2 id="snap_item_size_edge_case"><a href="#snap_item_size_edge_case">Size list edge case</a></h2>
 
             There are two snap items (
             <a href="#obj_player_info_race">obj_player_info_race</a> and
@@ -78,14 +99,7 @@
             unknown to the client as long as the size is included so the client knows how many bytes
             to ignore.
 
-            <h2>Snap item layout</h2>
-            <pre class="code-snippet">
-                <code>
-    +---------+----+-----------+
-    | type_id | id | payload.. |
-    +---------+----+-----------+
-                </code>
-            </pre>
+            <h2 id="snapshot_data"><a href="#snapshot_data">Snapshot data format</a></h2>
             Every type_id has its own ids. So there can be a projectile with id 0 and a
             character with id 0.
             Here a fully annotated real sample snapshot with the raw bytes on the left
@@ -95,7 +109,8 @@
                 <img class="rounded-img" src="../img/snap_dump_07.png" alt="">
             </div>
             It shows the layout which always starts with the header containing the amount of deleted items.
-            The amount of deltas and a unused zero field. Followed by snap items.
+            The amount of deltas (updated items) and a unused zero field. In this example there are no deleted items so the header is
+            followed directly with the updated <a href="#snap_item">items</a> (new and changed items).
         </p>
         <h2 id="snapshot_deltas"><a href="#snapshot_deltas">All snapshot items are deltas</a></h2>
         <p>
