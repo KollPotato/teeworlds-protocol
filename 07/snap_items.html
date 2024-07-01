@@ -138,6 +138,87 @@
                 Also the first snapshot can be unpacked like a delta. The delta tick (game tick of the delta base) will be the magic value -1.
                 And the delta can be applied to an empty snapshot.
         </p>
+        <h2 id="delta_item_example"><a href="#delta_item_example">Delta item example</a></h2>
+        <p>
+            Here an example value of one character snap item sent in the first snapshot.
+            All values can be interpreted as is or as a diff against null values.
+            <pre class="code-snippet">
+                <code>
+  // NETMSG_SNAPSINGLE game_tick=8170 delta_tick=-1
+
+  struct CNetObj_Character Item = {
+   .m_Tick = 8168,
+   .m_X = 3199920; // 99997 tiles (divided by 32)
+   .m_Y = 1105; // 34 tiles (divided by 32)
+   .m_VelX = 0,
+   .m_VelY = 128,
+   .m_Angle = 0,
+   .m_Direction = 0,
+   .m_Jumped = 0,
+   .m_HookedPlayer = -1,
+   .m_HookState = 0,
+   .m_HookTick = 0,
+   .m_HookX = 3199920,
+   .m_HookY = 1104,
+   .m_HookDx = 0,
+   .m_HookDy = 0,
+   .m_Health = 10,
+   .m_Armor = 0,
+   .m_AmmoCount = 10,
+   .m_Weapon = 1; // WEAPON_GUN
+   .m_Emote = 0; // EMOTE_NORMAL
+   .m_AttackTick = 0,
+   .m_TriggeredEvents = 0,
+  };
+                </code>
+            </pre>
+
+            <img class="rounded-img" src="../img/game_tick_8170.png" alt="game tick 8170 in game">
+
+            <hr>
+
+            Then this would be the first delta snapshot. Which has to be red as a diff
+            to the snapshot with the game_tick matching this snapshots delta_tick (which is the one above).
+
+            <pre class="code-snippet">
+                <code>
+  // NETMSG_SNAPSINGLE game_tick=8218 delta_tick=8216
+
+  struct CNetObj_Character Item = {
+   .m_Tick = 50,
+   .m_X = -2; // 0 tiles (divided by 32)
+   .m_Y = 0; // 0 tiles (divided by 32)
+   .m_VelX = -512,
+   .m_VelY = 0,
+   .m_Angle = 0,
+   .m_Direction = -1,
+   .m_Jumped = 0,
+   .m_HookedPlayer = 0,
+   .m_HookState = 0,
+   .m_HookTick = 0,
+   .m_HookX = 0,
+   .m_HookY = 1,
+   .m_HookDx = 0,
+   .m_HookDy = 0,
+   .m_Health = 0,
+   .m_Armor = 0,
+   .m_AmmoCount = 0,
+   .m_Weapon = 0; // WEAPON_HAMMER
+   .m_Emote = 0; // EMOTE_NORMAL
+   .m_AttackTick = 0,
+   .m_TriggeredEvents = 0,
+  };
+                </code>
+            </pre>
+
+            The second snap item contains for example <code>m_X = -2</code> which would be on the very left of this huge map.
+            But the actual position of the tee is now the old <code>m_X</code> plus <code>-2</code> which would be <code>3199918</code>.
+            Also the <code>m_Weapon</code> is set to <code>0</code> which would indicate <code>WEAPON_HAMMER</code> but it has to be red as a
+            diff to the old weapon which was <code>1 (WEAPON_GUN)</code> so <code>1 + 0</code> is still <code>1</code>
+            meaning this tee actually still holds a gun.
+
+            <img class="rounded-img" src="../img/game_tick_8218.png" alt="game tick 8218 in game">
+        </p>
         <h2 id="known_size_items"><a href="#known_size_items">Known size table</a></h2>
         <table>
             <tr>
