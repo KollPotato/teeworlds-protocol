@@ -89,8 +89,12 @@
                 to unpack new deltas against.
                 <br>
                 <br>
-                Also the first snapshot can be unpacked like a delta. The delta tick (game tick of the delta base) will be the magic value -1.
+                Also the first snapshot can be unpacked like a delta.
                 And the delta can be applied to an empty snapshot.
+                In that case
+                <a href="system_messages.html#NETMSG_SNAP_game_tick">game tick</a> -
+                <a href="system_messages.html#NETMSG_SNAP_delta_tick">delta_tick</a>
+                should evaluate to <code>-1</code>
         </p>
 
         <h2 id="known_size_items"><a href="#known_size_items">Known size table</a></h2>
