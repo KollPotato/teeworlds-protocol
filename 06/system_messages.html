@@ -314,14 +314,20 @@
                     <td id="NETMSG_SNAP_num_parts"><a href="#NETMSG_SNAP_num_parts">Num parts</a></td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
                     <td>
-                        TODO
+                        Indicates the total amount of parts for this snapshot. The current part is set in the <a href="#NETMSG_SNAP_part">Part</a> field.
+                        The client is supposed to collect the payload and concatinate it locally and only if the last part is received it should parse the snapshot.
+                        Where last part is defined as <code><a href="#NETMSG_SNAP_part">Part</a> == <a href="#NETMSG_SNAP_num_parts">Num Parts</a> - 1</code>.
+                        <br>
+                        <br>
+                        So if <a href="#NETMSG_SNAP_num_parts">Num Parts</a> is set to 2 the first 
+                        <a href="#NETMSG_SNAP_part">Part</a> will be <code>0</code> and the second (last) will be <code>1</code>.
                     </td>
                 </tr>
                 <tr>
                     <td id="NETMSG_SNAP_part"><a href="#NETMSG_SNAP_part">Part</a></td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
                     <td>
-                        TODO
+                            0 based index for <a href="#NETMSG_SNAP_num_parts">Num Parts</a>.
                     </td>
                 </tr>
                 <tr>
