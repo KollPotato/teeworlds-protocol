@@ -197,13 +197,22 @@
 resend flag unset
 
 <a href="packet_layout.html#chunk_header_flags">Click here for details on chunk header flags</a>
-    </span></span> 28 01 03  30 2E 37 20  38 30 32 66      @(..<a href="https://github.com/teeworlds/teeworlds/blob/26d24ec061d44e6084b2d77a9b8a0a48e354eba6/src/game/version.h#L8">0.7</a> <a href="https://github.com/teeworlds/teeworlds/blob/26d24ec061d44e6084b2d77a9b8a0a48e354eba6/src/game/version.h#L7">802f</a>
+    </span></span> 28 01 <span class="tooltip">03<span class="tooltiptext">0x03      hex
+00000011  binary
+^     ^^
+ \    /|
+  \  / |
+   1   |
+   | system flag set
+   v
+   1
+<a href="system_messages.html#NETMSG_INFO">NETMSG_INFO (message id 1)</a>
+    </span></span>  30 2E 37 20  38 30 32 66      @(..<a href="https://github.com/teeworlds/teeworlds/blob/26d24ec061d44e6084b2d77a9b8a0a48e354eba6/src/game/version.h#L8">0.7</a> <a href="https://github.com/teeworlds/teeworlds/blob/26d24ec061d44e6084b2d77a9b8a0a48e354eba6/src/game/version.h#L7">802f</a>
     31 62 65 36  30 61 30 35  36 36 35 66      <a href="https://github.com/teeworlds/teeworlds/blob/26d24ec061d44e6084b2d77a9b8a0a48e354eba6/src/game/version.h#L7">1be60a05665f</a>
     00 6D 79 5F  70 61 73 73  77 6F 72 64      <span class="red">my_password</span>
     5F 31 32 33  00 85 1C 00                   <span class="red">_123</span>...
             </code>
         </pre>
-
         <hr>
         <h2 id="srv_cl_mapinfo"><a href="#srv_cl_mapinfo">[SERVER->CLIENT] Map info</a></h2>
         <p>
