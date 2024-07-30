@@ -116,7 +116,7 @@
             The chunk header has a optional sequence number field that is only set
             if the vital flag is set to true.
             The vital flag indicates that the following chunk is important.
-            So it includes a sequence number that has to be acknowleged by the receiving party
+            So it includes a sequence number that has to be acknowledge in the packet header by the receiving party
             if that does not happen the message will be resend.
             <pre class="code-snippet">
                 <code>
@@ -151,6 +151,52 @@
     +---------+---------+-----------------+--------+-----------------+
                 </code>
             </pre>
+
+            <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Flags</td>
+                    <td>
+                        2 bits in the following order
+                        <ul>
+                            <li>vital - 1=vital 0=not vital</li>
+                            <li>resend - 1=resend 0=not resend</li>
+                        </ul>
+                        For example if the binary value of flags is
+                        <code>10</code>
+                        It means it is a vital chunk that is sent for the first time.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Size</td>
+                    <td>
+                        Chunk payload size in bytes. Including the message id. The chunk header it self might be 2 or 3 bytes depending if it is vital or not.
+                        These bytes are not counted in the size. Only the message id that follows the chunk header and the payload is included in the size.
+                        <pre class="code-snippet">
+                            <code>
+    # Game or system message layout with header
+    +--------------+------------+----------------------------+
+    | Chunk header | Message ID | Message payload fields ... |
+    | 2-3 bytes    | 1-2 bytes  |                            |
+    +--------------+------------+----------------------------+
+                    &lt;------------ size in bytes ------------&gt;
+                            </code>
+                        </pre>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Sequence number</td>
+                    <td>
+                        The amount of vital chunks already sent. It also counts it self.
+                        So if the first chunk that is sent is not vital the sequence number is 0.
+                        If the first chunk that is sent is vital the sequence number is 1.
+                        Then it will increment by 1 for every vital chunk being sent.
+                    </td>
+                </tr>
+            </table>
 
             <h1 id="message_with_header_and_payload"><a href="#message_with_header_and_payload">Game/system message with header and payload</a></h1>
             Game messages and system messages share the exact same <a href="#chunk_headers">chunk header</a> format.
