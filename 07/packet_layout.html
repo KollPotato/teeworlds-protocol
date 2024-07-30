@@ -78,7 +78,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td>Flags</td>
+                    <td id="packet_header_flags"><a href="#packet_header_flags">Flags</a></td>
                     <td>
                         4 bits in the following order
                         <ul>
@@ -93,20 +93,20 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Acknowledged sequence number</td>
+                    <td id="packet_header_sequence"><a href="#packet_header_sequence">Acknowledged sequence number</a></td>
                     <td>
                         Telling the receiver how many vital packets were successfully received.
                     </td>
                 </tr>
                 <tr>
-                    <td>Number of chunks</td>
+                    <td id="packet_header_num_chunks"><a href="#packet_header_num_chunks">Number of chunks</a></td>
                     <td>
                         Number of game and system message chunks.
                         If it is a control packet this value is 0 at all times.
                     </td>
                 </tr>
                 <tr>
-                    <td>Security token</td>
+                    <td id="packet_header_token"><a href="#packet_header_token">Security token</a></td>
                     <td>
                         4 byte random <a href="fundamentals.html#tokens">security token</a> to avoid spoofing.
                     </td>
@@ -116,7 +116,7 @@
             The chunk header has a optional sequence number field that is only set
             if the vital flag is set to true.
             The vital flag indicates that the following chunk is important.
-            So it includes a sequence number that has to be acknowledge in the packet header by the receiving party
+            So it includes a <a href="#chunk_header_sequence">sequence number</a> that has to be <a href="#packet_header_sequence">acknowledged in the packet header</a> by the receiving party
             if that does not happen the message will be resend.
             <pre class="code-snippet">
                 <code>
@@ -158,7 +158,7 @@
                     <th>Description</th>
                 </tr>
                 <tr>
-                    <td>Flags</td>
+                    <td id="chunk_header_flags"><a href="#chunk_header_flags">Flags</a></td>
                     <td>
                         2 bits in the following order
                         <ul>
@@ -171,7 +171,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Size</td>
+                    <td id="chunk_header_size"><a href="#chunk_header_size">Size</a></td>
                     <td>
                         Chunk payload size in bytes. Including the message id. The chunk header it self might be 2 or 3 bytes depending if it is vital or not.
                         These bytes are not counted in the size. Only the message id that follows the chunk header and the payload is included in the size.
@@ -188,7 +188,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Sequence number</td>
+                    <td id="chunk_header_sequence"><a href="#chunk_header_sequence">Sequence number</a></td>
                     <td>
                         The amount of vital chunks already sent. It also counts it self.
                         So if the first chunk that is sent is not vital the sequence number is 0.
