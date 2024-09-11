@@ -97,8 +97,8 @@
             <code>
     &lt;04  00  00  <span class="token">FF  FF  FF  FF</span>&gt;&lt;05&gt;&lt;<span class="token">51  3B  59  46</span>&gt;
      ^                           ^   ^
- size=7 flags=1                  |   client token
-                             NET_CTRLMSG_TOKEN
+   flags=1                       |   client token
+  (CONTROL)                  NET_CTRLMSG_TOKEN
             </code>
         </pre>
 
@@ -113,8 +113,8 @@
             <code>
     &lt;04  00  00  <span class="token">51  3B  59  46</span>&gt;&lt;05&gt;&lt;<span class="token">C0  7D  1E  5E</span>&gt;
      ^           ^               ^   ^
- size=7 flags=1  |               |   server token
-                 |         NET_CTRLMSG_TOKEN
+   flags=1       |               |   server token
+  (CONTROL)      |         NET_CTRLMSG_TOKEN
                 client token
             </code>
         </pre>
@@ -132,8 +132,8 @@
             <code>
     &lt;04  00  00  <span class="token">C0  7D  1E  5E</span>&gt;&lt;01&gt;&lt;<span class="token">51  3B  59  46</span>&gt;
      ^           ^               ^   ^
- size=7 flags=1  |               |   client token
-            server token     <a href="ctrl_messages.html#NET_CTRLMSG_CONNECT">NET_CTRLMSG_CONNECT</a>
+   flags=1       |               |   client token
+  (CONTROL) server token     <a href="ctrl_messages.html#NET_CTRLMSG_CONNECT">NET_CTRLMSG_CONNECT</a>
             </code>
         </pre>
 
@@ -151,8 +151,8 @@
             <code>
     &lt;04  00  00  <span class="token">51  3B  59  46</span>&gt;&lt;02&gt;
      ^           ^               ^
- size=7 flags=1  |               |
-                 |       NET_CTRLMSG_ACCEPT
+   flags=1       |               |
+  (CONTROL)      |       NET_CTRLMSG_ACCEPT
             client token
             </code>
         </pre>
@@ -293,7 +293,7 @@ resend flag unset
             <code>
             &lt;00  01  01  <span class="token">C0  7D  1E  5E</span>&gt;&lt;40  01  02&gt; 25
               ^          ^               ^           ^
-    size=7 flags = 0     |              ChunkHeader  NETMSG_READY
+           flags=0       |              ChunkHeader  NETMSG_READY
                         server token
             </code>
         </pre>
@@ -315,9 +315,8 @@ resend flag unset
             <code>
         &lt;10  02  03  <span class="token">51  3B  59  46</span>&gt; 4A  42  88  4A  6E  16  BA  31  46  A2  84  9E  BF  E2  06
          ^           ^               ^
-    size=7       client token      compressed data
-    flags = 4
-    (COMPRESSION)
+    flags=4      client token      compressed data
+   (COMPRESSION)
             </code>
         </pre>
         The payload (without the packet header) decompresses to this
@@ -613,8 +612,8 @@ resend flag unset
             <code>
     &lt;10  0A  01  C0  7D  1E  5E&gt; 4D  E9  B0  14  7E  13  D6  F8  6F  57  DC  00
         ^                        ^
-    size=7                   compressed payload
-    flags = 4 (COMPRESSION)
+    flags=4                  compressed payload
+   (COMPRESSION)
             </code>
         </pre>
         <p>
@@ -702,8 +701,8 @@ resend flag unset
             <code>
                 &lt;04  0A  00  <span class="token">C0  7D  1E  5E</span>&gt;&lt;04&gt;
                  ^           ^               ^
-               size=7    client/server    NET_CTRLMSG_CLOSE
-               flags=1      token
+               flags=1    client/server    NET_CTRLMSG_CLOSE
+              (CONTROL)     token
             </code>
         </pre>
     </div> <!-- content -->
