@@ -180,16 +180,16 @@
                 <tr>
                     <th>Response to:</th>
                     <td>
-                        TODO
+                        <a href="#NETMSGTYPE_CL_SAY">NETMSGTYPE_CL_SAY</a>
                     </td>
                 </tr>
                 <tr>
                     <th>Expected response:</th>
-                    <td>TODO</td>
+                    <td>None</td>
                 </tr>
                 <tr>
                     <th>Flags:</th>
-                    <td>TODO</td>
+                    <td><a href="fundamentals.html#sequence_numbers">MSGFLAG_VITAL</a></td>
                 </tr>
             </table>
             <table>
@@ -201,17 +201,33 @@
                 <tr>
                     <td id="NETMSGTYPE_SV_CHAT_team"><a href="#NETMSGTYPE_SV_CHAT_team">Team</a></td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
-                    <td>TODO</td>
+                    <td>
+                            <ul>
+                                <li>0 - public chat</li>
+                                <li>1 - team chat</li>
+                            </ul>
+
+                            Technically the range from TEAM_SPECTATORS (-1) to TEAM_BLUE (1) are
+                            the allowed values. But it is not used like that.
+                            <br>
+                            <br>
+                            <strong>Be careful!</strong> the ddracenetwork protocol extended this
+                            with their own team values for whisper.
+                    </td>
                 </tr>
                 <tr>
                     <td id="NETMSGTYPE_SV_CHAT_client_id"><a href="#NETMSGTYPE_SV_CHAT_client_id">Client ID</a></td>
                     <td><a href="fundamentals.html#int_packing">Int</a></td>
-                    <td>TODO</td>
+                    <td>
+                            Client ID of the message author.
+                    </td>
                 </tr>
                 <tr>
                     <td id="NETMSGTYPE_SV_CHAT_message"><a href="#NETMSGTYPE_SV_CHAT_message">Message</a></td>
                     <td><a href="fundamentals.html#string_packing">String</a></td>
-                    <td>TODO</td>
+                    <td>
+                            Message that will be displayed in the chat.
+                    </td>
                 </tr>
             </table>
         </p>
@@ -1537,16 +1553,18 @@
                 <tr>
                     <th>Response to:</th>
                     <td>
-                        TODO
+                            This is initiaited by user input.
                     </td>
                 </tr>
                 <tr>
                     <th>Expected response:</th>
-                    <td>TODO</td>
+                    <td>
+                        <a href="#NETMSGTYPE_SV_CHAT">NETMSGTYPE_SV_CHAT</a>
+                    </td>
                 </tr>
                 <tr>
                     <th>Flags:</th>
-                    <td>TODO</td>
+                    <td><a href="fundamentals.html#sequence_numbers">MSGFLAG_VITAL</a></td>
                 </tr>
             </table>
             <table>
