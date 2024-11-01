@@ -199,6 +199,13 @@
                         So this payload is a bit redundant and not very critical.
                     </td>
                 </tr>
+                <tr>
+                    <td id="NET_CTRLMSG_CONNECT_null_bytes"><a href="#NET_CTRLMSG_CONNECT_null_bytes">Null bytes</a></td>
+                    <td><a href="fundamentals.html#raw_packing">Raw</a></td>
+                    <td>
+                        508 null bytes to protect against reflection attacks.
+                    </td>
+                </tr>
             </table>
             The client and server code for sending and receiving this message is in the same
             shared function
@@ -493,6 +500,13 @@
                         <br>
                         This field is used by client and server to send their own token
                         to the other party.
+                    </td>
+                </tr>
+                <tr>
+                    <td id="NET_CTRLMSG_TOKEN_null_bytes"><a href="#NET_CTRLMSG_TOKEN_null_bytes">Null bytes</a></td>
+                    <td><a href="fundamentals.html#raw_packing">Raw</a></td>
+                    <td>
+                        508 null bytes to protect against reflection attacks.
                     </td>
                 </tr>
             </table>
