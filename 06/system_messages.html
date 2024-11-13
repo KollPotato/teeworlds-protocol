@@ -73,12 +73,10 @@
                 <tr><th>Recipient:</th><td>Server</td></tr>
                 <tr><th>Message ID:</th><td>1</td></tr>
                 <tr>
-                    <th>Response to:</th>
-                    <td>TODO</td>
+                    <th><strong>Response to:</strong></th><td><a href="ctrl_messages.html#NET_CTRLMSG_ACCEPT">NET_CTRLMSG_ACCEPT</a></td>
                 </tr>
                 <tr>
-                    <th>Expected response:</th>
-                    <td>TODO</td>
+                    <th><strong>Expected response:</strong></th><td><a href="#NETMSG_MAP_CHANGE">NETMSG_MAP_CHANGE</a></td>
                 </tr>
             </table>
             <table>
@@ -108,6 +106,56 @@
         Msg.AddString(g_Config.m_Password, 128);
         SendMsgEx(&Msg, MSGFLAG_VITAL|MSGFLAG_FLUSH);
     }
+                </code>
+            </pre>
+
+            The server respons to it in
+            <a href="https://github.com/teeworlds/teeworlds/blob/93f5bf632a3859e97d527fc93a26b6dced767fbc/src/engine/server/server.cpp#L804-L846">
+                CServer::ProcessClientPacket()
+            </a>
+            with
+            <a href="#NETMSG_MAP_CHANGE">NETMSG_MAP_CHANGE</a>
+            in a call to
+            <a href="https://github.com/teeworlds/teeworlds/blob/93f5bf632a3859e97d527fc93a26b6dced767fbc/src/engine/server/server.cpp#L733-L740">
+                SendMap(ClientID);
+            </a>
+
+
+            <pre class="code-snippet">
+                <code>
+    void CServer::ProcessClientPacket(CNetChunk *pPacket)
+    {
+            // [...]
+
+            if(Sys)
+            {
+                    // system message
+                    if(Msg == NETMSG_INFO)
+                    {
+                            if((pPacket-&gt;m_Flags&NET_CHUNKFLAG_VITAL) != 0 && m_aClients[ClientID].m_State == CClient::STATE_AUTH)
+                            {
+                                    const char *pVersion = Unpacker.GetString(CUnpacker::SANITIZE_CC);
+                                    if(str_comp(pVersion, GameServer()-&gt;NetVersion()) != 0)
+                                    {
+                                            // wrong version
+                                            char aReason[256];
+                                            str_format(aReason, sizeof(aReason), "Wrong version. Server is running '%s' and client '%s'", GameServer()-&gt;NetVersion(), pVersion);
+                                            m_NetServer.Drop(ClientID, aReason);
+                                            return;
+                                    }
+
+                                    const char *pPassword = Unpacker.GetString(CUnpacker::SANITIZE_CC);
+                                    if(g_Config.m_Password[0] != 0 && str_comp(g_Config.m_Password, pPassword) != 0)
+                                    {
+                                            // wrong password
+                                            m_NetServer.Drop(ClientID, "Wrong password");
+                                            return;
+                                    }
+
+                                    m_aClients[ClientID].m_State = CClient::STATE_CONNECTING;
+                                    <a href="https://github.com/teeworlds/teeworlds/blob/93f5bf632a3859e97d527fc93a26b6dced767fbc/src/engine/server/server.cpp#L733-L740">SendMap(ClientID);</a>
+                            }
+                    }
                 </code>
             </pre>
         </p>
