@@ -90,7 +90,7 @@
             The packet header contains <code>FF FF FF FF</code> as placeholder for the server token.
             Since the client does not know the server token yet.
 
-            At the end this packet contains 501 nullbytes to prohibit reflection attacks.
+            At the end this packet contains 508 nullbytes to prohibit reflection attacks.
             Those nullbytes are not shown below.
         </p>
         <pre class="code-snippet">
@@ -124,8 +124,18 @@
         <p>
             After server and client exchanged <a href="fundamentals.html#tokens">tokens</a> the client will once again send its token.
             This time setting the Control Message to <a href="ctrl_messages.html#NET_CTRLMSG_CONNECT">NET_CTRLMSG_CONNECT</a> to initiate the connection.
-
-            At the end this packet contains 501 nullbytes to prohibit reflection attacks.
+            At the end this packet contains
+            <span class="tooltip">
+                501
+                <span class="tooltiptext">
+                    The full udp payload is 520 bytes.
+                    The 0.7 header is 7 bytes leaving 513 bytes.
+                    Then one byte is the control message type 0x05 (NET_CTRLMSG_TOKEN)
+                    Then we have 512 more bytes anti spoof. The first 4 bytes of these
+                    are the client token. And then remaining 508 are nullbytes.
+                </span>
+            </span>
+            nullbytes to prohibit reflection attacks.
             Those nullbytes are not shown below.
         </p>
         <pre class="code-snippet">
